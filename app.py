@@ -174,7 +174,5 @@ def purchases_report(user_id):
     conn.close()
     return render_template('purchases_report.html', purchases=purchases)
 
-# Outros endpoints...
-
 if __name__ == '__main__':
     app.run(debug=True)

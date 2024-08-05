@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Relatório de Compras</title>
+</head>
+<body>
+    <h1>Relatório de Compras</h1>
+    <ul>
+        {% for purchase in purchases %}
+            <li>{{ purchase['ad_id'] }} - {{ purchase['purchase_date'] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

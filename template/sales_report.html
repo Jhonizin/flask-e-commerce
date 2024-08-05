@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Relatório de Vendas</title>
+</head>
+<body>
+    <h1>Relatório de Vendas</h1>
+    <ul>
+        {% for sale in sales %}
+            <li>{{ sale['title'] }} - {{ sale['description'] }} - {{ sale['price'] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

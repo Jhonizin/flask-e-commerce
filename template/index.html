@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plataforma de E-commerce</title>
+</head>
+<body>
+    <h1>Anúncios</h1>
+    <ul>
+        {% for ad in ads %}
+            <li>
+                <a href="{{ url_for('ad_detail', ad_id=ad['id']) }}">{{ ad['title'] }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

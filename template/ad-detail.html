@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ ad['title'] }}</title>
+</head>
+<body>
+    <h1>{{ ad['title'] }}</h1>
+    <p>{{ ad['description'] }}</p>
+    <p>Preço: {{ ad['price'] }}</p>
+
+    <h2>Perguntas</h2>
+    <ul>
+        {% for question in questions %}
+            <li>
+                <strong>Pergunta:</strong> {{ question['question'] }}<br>
+                <strong>Resposta:</strong> {{ question['answer'] }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

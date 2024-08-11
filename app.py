@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for, session
+from models import db, User, Ad, Question, Purchase, FavoriteList
 
 app = Flask(__name__)
 
@@ -173,6 +175,60 @@ def purchases_report(user_id):
     purchases = cursor.fetchall()
     conn.close()
     return render_template('purchases_report.html', purchases=purchases)
+
+@app.route('/create_ad', methods=['GET', 'POST'])
+def create_ad():
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        price = request.form['price']
+        category_id = request.form['category_id']
+        user_id = session['user_id']
+        
+        new_ad = Ad(title=title, description=description, price=price, category_id=category_id, user_id=user_id)
+        db.session.add(new_ad)
+        db.session.commit()
+        
+        return redirect(url_for('user_dashboard'))
+    return render_template('create_ad.html')
+
+@app.route('/ads')
+def list_ads():
+    ads = Ad.query.all()
+    return render_template('ads.html', ads=ads)
+
+@app.route('/ad/<int:ad_id>')
+def view_ad(ad_id):
+    ad = Ad.query.get_or_404(ad_id)
+    return render_template('view_ad.html', ad=ad)
+
+@app.route('/ads')
+def list_ads():
+    ads = Ad.query.all()
+    return render_template('ads.html', ads=ads)
+
+@app.route('/ad/<int:ad_id>')
+def view_ad(ad_id):
+    ad = Ad.query.get_or_404(ad_id)
+    return render_template('view_ad.html', ad=ad)
+
+@app.route('/edit_ad/<int:ad_id>', methods=['GET', 'POST'])
+def edit_ad(ad_id):
+    ad = Ad.query.get_or_404(ad_id)
+    if request.method == 'POST':
+        ad.title = request.form['title']
+        ad.description = request.form['description']
+        ad.price = request.form['price']
+        db.session.commit()
+        return redirect(url_for('view_ad', ad_id=ad_id))
+    return render_template('edit_ad.html', ad=ad)
+
+@app.route('/delete_ad/<int:ad_id>', methods=['POST'])
+def delete_ad(ad_id):
+    ad = Ad.query.get_or_404(ad_id)
+    db.session.delete(ad)
+    db.session.commit()
+    return redirect(url_for('user_dashboard'))
 
 # Outros endpoints...
 

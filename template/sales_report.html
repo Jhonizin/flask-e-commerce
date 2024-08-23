@@ -4,11 +4,64 @@
     <title>Relatório de Vendas</title>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">E-Commerce</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/create_ad">Criar Anúncio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user/{{ session['user_id'] }}/sales">Vendas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user/{{ session['user_id'] }}/purchases">Compras</a>
+            </li>
+            <li class="nav-item">
+              {% if 'user_id' in session %}
+              <a class="nav-link" href="/logout">Logout</a>
+              {% else %}
+              <a class="nav-link" href="/login">Login</a>
+              {% endif %}
+            </li>
+          </ul>
+        </div>
+      </nav>
+      
     <h1>Relatório de Vendas</h1>
     <ul>
         {% for sale in sales %}
             <li>{{ sale['title'] }} - {{ sale['description'] }} - {{ sale['price'] }}</li>
         {% endfor %}
     </ul>
+    {% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h2 class="my-4">Relatório de Vendas</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Preço</th>
+        <th>Data de Criação</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sale in sales %}
+      <tr>
+        <td>{{ sale.title }}</td>
+        <td>R${{ sale.price }}</td>
+        <td>{{ sale.creation_date }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
 </body>
 </html>

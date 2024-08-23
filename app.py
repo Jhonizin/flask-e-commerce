@@ -232,3 +232,65 @@ def delete_ad(ad_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+    @app.route('/create_ad', methods=['GET', 'POST'])
+def create_ad():
+    if 'user_id' not in session:
+        return redirect(url_for('login')) 
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        price = request.form['price']
+        category_id = request.form['category_id']
+        user_id = session['user_id']
+        
+        new_ad = Ad(title=title, description=description, price=price, category_id=category_id, user_id=user_id)
+        db.session.add(new_ad)
+        db.session.commit()
+        
+        return redirect(url_for('user_dashboard'))
+    return render_template('create_ad.html')
+
+@app.route('/edit_ad/<int:ad_id>', methods=['GET', 'POST'])
+def edit_ad(ad_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login')) 
+    ad = Ad.query.get_or_404(ad_id)
+    if request.method == 'POST':
+        ad.title = request.form['title']
+        ad.description = request.form['description']
+        ad.price = request.form['price']
+        db.session.commit()
+        return redirect(url_for('view_ad', ad_id=ad_id))
+    return render_template('edit_ad.html', ad=ad)
+
+@app.route('/delete_ad/<int:ad_id>', methods=['POST'])
+def delete_ad(ad_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login')) 
+    ad = Ad.query.get_or_404(ad_id)
+    db.session.delete(ad)
+    db.session.commit()
+    return redirect(url_for('user_dashboard'))
+
+@app.route('/user/<int:user_id>/sales')
+def sales_report(user_id):
+    if 'user_id' not in session or session['user_id'] != user_id:
+        return redirect(url_for('login'))
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM ads WHERE user_id = ?', (user_id,))
+    sales = cursor.fetchall()
+    conn.close()
+    return render_template('sales_report.html', sales=sales)
+
+@app.route('/user/<int:user_id>/purchases')
+def purchases_report(user_id):
+    if 'user_id' not in session or session['user_id'] != user_id:
+        return redirect(url_for('login'))
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM purchases WHERE buyer_id = ?', (user_id,))
+    purchases = cursor.fetchall()
+    conn.close()
+    return render_template('purchases_report.html', purchases=purchases)
